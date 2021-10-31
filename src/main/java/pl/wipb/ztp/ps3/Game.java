@@ -17,10 +17,10 @@ import javax.swing.JPanel;
 class Game extends JPanel {
     private final int TILESIZE = 32;
     private final Sprite sprite;
-    SegmentBuilder segmentBuilder;
+    Builder segmentBuilder;
     private List<Segment> plansza;
 
-    private void stworzPlansze(String plik, SegmentBuilder segmentBuilder) {
+    private void stworzPlansze(String plik, Builder segmentBuilder) {
         
         BufferedReader br = null;
         try {
@@ -32,6 +32,7 @@ class Game extends JPanel {
             char znak;
             char cyfra1;
             char cyfra2;
+
             while ((linia = br.readLine()) != null) {
                 segmentBuilder.setX(4);
                 znaki = 0;
@@ -40,14 +41,34 @@ class Game extends JPanel {
                     cyfra1 = linia.charAt(znaki++);
                     cyfra2 = linia.charAt(znaki++);
                     liczba = (cyfra1 - '0') * 10 + (cyfra2 - '0');
-                    segmentBuilder.addSegmentType(znak);
-                    for (int i = 0; i < liczba; ++i) {
-                        segmentBuilder.build();
-                        if (znak != 'X') segmentBuilder.setX(segmentBuilder.getX() + TILESIZE);
+                    switch (znak) {
+                        case 'X':
+                            segmentBuilder.createX(liczba);
+                            break;
+                        case 'A':
+                            for (int i = 0; i < liczba; ++i) {
+                                segmentBuilder.createA();
+                            }
+                            break;
+                        case 'B':
+                            for (int i = 0; i < liczba; ++i) {
+                                segmentBuilder.createB();
+                            }
+                            break;
+                        case 'C':
+                            for (int i = 0; i < liczba; ++i) {
+                                segmentBuilder.createC();
+                            }
+                            break;
+                        case 'G':
+                            for (int i = 0; i < liczba; ++i) {
+                                segmentBuilder.createG();
+                            }
+                            break;
                     }
                 }
 
-                segmentBuilder.setY(segmentBuilder.getY() + TILESIZE);
+                segmentBuilder.setY(segmentBuilder.getY() + segmentBuilder.getTILESIZE());
             }
             br.close();
 
@@ -61,7 +82,7 @@ class Game extends JPanel {
         setPreferredSize(new Dimension(424, 268));
         setFocusable(true);
 
-        segmentBuilder = new SegmentBuilder();
+        segmentBuilder = new SegmentBuilder2();
         stworzPlansze(plik, segmentBuilder);
         plansza = segmentBuilder.getPlansza();
         sprite = new Sprite(plansza, "mario.png");
